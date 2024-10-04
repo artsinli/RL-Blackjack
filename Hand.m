@@ -1,12 +1,10 @@
 classdef Hand < handle
     properties
         cards % this is a BlackjackDeck item 
-    end
-    properties
         hand_value
     end
     
-    methods 
+    methods (Access = protected)
         function obj = Hand()
             obj.cards = struct('Suit', {}, 'Value', {}, 'BlackjackValue', {});
         end
@@ -15,9 +13,7 @@ classdef Hand < handle
             obj.cards(end + 1) = card;  % Add card to hand
             obj.hand_value = getHandValue(obj);
         end
-    end
-    
-    methods (Access = private)
+
         function val = getHandValue(obj)
             val = 0;
             nAces = 0;

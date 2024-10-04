@@ -2,6 +2,8 @@ classdef BlackjackDeck < Deck
     methods
         % Constructor to call parent Deck constructor
         function obj = BlackjackDeck(numDecks)
+            % Restricts the numDecks input variable to be an integer
+            % with base value of 6.
             arguments
                 numDecks uint32 {mustBeInteger} = 6 % default 6
             end
@@ -20,7 +22,15 @@ classdef BlackjackDeck < Deck
             obj.deck = obj.shuffleDeck();
         end
         
-        % Function to assign Blackjack value to a drawn card
+        % Function to draw a card and get its Blackjack value
+        function drawnCard = drawBlackjackCard(obj)
+            drawnCard = obj.drawCard();  % Draw a card using the parent class method
+            drawnCard.BlackjackValue = obj.blackjackValue(drawnCard);  % Get the Blackjack value of the card
+        end
+    end
+
+    methods (Access = private)
+         % Function to assign Blackjack value to a drawn card
         function value = blackjackValue(~, card)
             switch card.Value
                 case {'2', '3', '4', '5', '6', '7', '8', '9', '10'}
@@ -32,12 +42,6 @@ classdef BlackjackDeck < Deck
                 otherwise
                     error('Invalid card value.');
             end
-        end
-        
-        % Function to draw a card and get its Blackjack value
-        function drawnCard = drawBlackjackCard(obj)
-            drawnCard = obj.drawCard();  % Draw a card using the parent class method
-            drawnCard.BlackjackValue = obj.blackjackValue(drawnCard);  % Get the Blackjack value of the card
         end
     end
 end
