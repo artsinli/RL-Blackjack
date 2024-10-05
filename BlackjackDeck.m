@@ -1,4 +1,9 @@
 classdef BlackjackDeck < Deck
+
+    properties(Access=private,Constant)
+        cut_range = [60 75];
+    end
+
     methods
         % Constructor to call parent Deck constructor
         function obj = BlackjackDeck(numDecks)
@@ -8,20 +13,23 @@ classdef BlackjackDeck < Deck
                 numDecks uint32 {mustBeInteger} = 6 % default 6
             end
             obj@Deck();  % Call the constructor of the parent Deck class
-            if numDecks > 1
-                for i = 2:numDecks
-                    tempDeck = Deck();  % Create another instance of Deck
-                    obj.deck = [obj.deck, tempDeck.deck];  % Concatenate the new deck
-                end
-                
-                % Shuffle the combined deck
-                obj.deck = obj.shuffleDeck();
-            end
             
+            % Replicate the deck to the number of copies 
+            obj.deck = repmat(obj.deck,1,numDecks);
+          
             % Shuffle the combined deck
             obj.deck = obj.shuffleDeck();
+
+            % Deck is then cut at the bottom,
+            cutval = randi(BlackjackDeck.cut_range);
+            
+            bottomCards = obj.deck(end-cutval+1:end);
+
+            obj.discardPile = [obj.discardPile, bottomCards];
+
+            obj.deck(end-cutval+1:end) = [];
         end
-        
+     
         % Function to draw a card and get its Blackjack value
         function drawnCard = drawBlackjackCard(obj)
             drawnCard = obj.drawCard();  % Draw a card using the parent class method

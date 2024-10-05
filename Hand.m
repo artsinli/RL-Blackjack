@@ -1,30 +1,22 @@
-classdef Hand < handle
-    properties
-        cards % this is a BlackjackDeck item 
-        hand_value
+classdef(Abstract=true) Hand < handle
+    properties 
+        current_hand % this is a BlackjackDeck item 
+        hand_value double
     end
-    
     methods (Access = protected)
         function obj = Hand()
-            obj.cards = struct('Suit', {}, 'Value', {}, 'BlackjackValue', {});
+            obj.current_hand = struct('Suit', {}, 'Value', {}, 'BlackjackValue', {});
+            obj.hand_value = 0;
         end
         
+        % Cannot discard cards from the players hand, must keep
         function addCard(obj, card)
-            obj.cards(end + 1) = card;  % Add card to hand
-            obj.hand_value = getHandValue(obj);
+            obj.current_hand(end + 1) = card;  % Add card to hand
+            % obj.hand_value = getHandValue(obj);
         end
-
-        function val = getHandValue(obj)
-            val = 0;
-            nAces = 0;
-            for c = obj.cards
-                if(size(c.BlackjackValue)>1)
-                    nAces = nAces + 1;
-                end
-                val = val + c.BlackjackValue;
-            end
-            obj.hand_value = val;
-        end
+    end
+    methods (Abstract)
+        getHandValue();
     end
 end
 
