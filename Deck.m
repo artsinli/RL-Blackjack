@@ -9,7 +9,7 @@ classdef(Abstract=true) Deck < handle
         values = {'2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace'}; % Struct array representing the discard pile
     end
 
-    methods % Do not want access to this class
+    methods (Access = protected)% Do not want access to this
         % Constructor to initialize deck
         function obj = Deck()
             % Initialize deck as an empty array
@@ -28,17 +28,21 @@ classdef(Abstract=true) Deck < handle
             obj.deck = obj.shuffleDeck();
         end
 
+        
+    end
+    methods
         % Function to draw a card from the deck
-        function drawnCard = drawCard(obj)
+        function drawnCard = drawCard(obj,numCards)
+            if nargin == 1
+                numCards = 1;
+            end
             if isempty(obj.deck)
                 error('No more cards in the deck.');
             end
-            drawnCard = obj.deck(1);  % Draw the top card
+            drawnCard = obj.deck(1:numCards);  % Draw the top card
             obj.deck(1) = [];  % Remove the card from the deck
         end
-    end
 
-    methods
         % Function to shuffle the deck
         function shuffledDeck = shuffleDeck(obj)
             shuffledDeck = obj.deck(randperm(length(obj.deck)));
@@ -55,7 +59,7 @@ classdef(Abstract=true) Deck < handle
             obj.deck(cardIndex) = [];
             
             % Add the card to the discard pile
-            obj.discardPile(end + 1) = discardedCard;
+            obj.discardPile = [obj.discardPile, discardedCard];
         end
         
         % Function to display the deck

@@ -31,15 +31,19 @@ classdef BlackjackDeck < Deck
         end
      
         % Function to draw a card and get its Blackjack value
-        function drawnCard = drawBlackjackCard(obj)
-            drawnCard = obj.drawCard();  % Draw a card using the parent class method
-            drawnCard.BlackjackValue = obj.blackjackValue(drawnCard);  % Get the Blackjack value of the card
+        function draw = drawCard(obj,numCards)
+            if nargin == 1
+                numCards = 1;
+            end
+            draw = drawCard@Deck(obj,numCards);
+            draw = arrayfun(@(card) setfield(card, 'BlackjackValue', obj.blackjackValue(card)), draw);
+            % drawnCard.BlackjackValue = obj.blackjackValue(drawnCard);  % Get the Blackjack value of the card
         end
     end
 
     methods (Access = private)
          % Function to assign Blackjack value to a drawn card
-        function value = blackjackValue(~, card)
+         function value = blackjackValue(~, card)
             switch card.Value
                 case {'2', '3', '4', '5', '6', '7', '8', '9', '10'}
                     value = str2double(card.Value);  % Convert numeric strings to numbers
