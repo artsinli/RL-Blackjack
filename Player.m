@@ -12,6 +12,7 @@ classdef Player < Hand
         canDoubleDown 
         SoftHand 
     end
+    %% CONSTRUCTORS
     methods
         function obj = Player(bet)
             % Initialize from the super class
@@ -35,6 +36,7 @@ classdef Player < Hand
     %% GET FUNCTIONS
     methods 
         function result = getHandValue(obj)
+            obj.calcHandValue;
             % Recalculate at each run
             % obj.calcHandValue % Ensure up to date
             result = obj.hand_value;
@@ -56,9 +58,11 @@ classdef Player < Hand
         end
 
         function calcHandValue(obj)
-            % Reset the hand value to zero to ensure there is no lingering
-            % data or stacking of pluses. 
+            % Reset the hand value and 
+            % ace table to zero. Ensures there is no lingering
+            % data or stacking.  
             obj.hand_value = 0; 
+            obj.nAces = 0;
             for c = obj.current_hand
                 obj.hand_value = obj.hand_value + c.BlackjackValue;
                 if strcmp(c.Value,'Ace')

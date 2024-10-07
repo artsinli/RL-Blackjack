@@ -40,7 +40,7 @@ classdef(Abstract=true) Deck < handle
                 error('No more cards in the deck.');
             end
             drawnCard = obj.deck(1:numCards);  % Draw the top card
-            obj.deck(1) = [];  % Remove the card from the deck
+            obj.deck(1:numCards) = [];  % Remove the card from the deck
         end
 
         % Function to shuffle the deck
