@@ -1,6 +1,5 @@
 classdef Player < Hand
-    % PLAYERHAND The plays and rules associated with a player hand
-    % Actions will be taken here as well
+    %% PROPERTIES
     properties
         bet
         AceTable
@@ -24,22 +23,19 @@ classdef Player < Hand
             obj.canDoubleDown = false;
             obj.nAces = 0;
         end
-
-        function addCard(obj, card)
-            % Must add cards to play
-            addCard@Hand(obj,card);
-
-            % Recalcs the hand value after each draw
-            obj.calcHandValue;
-        end
     end
-    %% GET FUNCTIONS
+    %% PUBLIC FUNCTIONS
     methods 
         function result = getHandValue(obj)
+            % Recalculate at each run, 
             obj.calcHandValue;
-            % Recalculate at each run
-            % obj.calcHandValue % Ensure up to date
             result = obj.hand_value;
+        end
+
+        function addCard(obj, card)
+            % If no cards are added to player, obj.hand_value is 0
+            addCard@Hand(obj,card);
+            obj.calcHandValue;
         end
     end
     %% CALCULATION FUNCTIONS
@@ -58,9 +54,7 @@ classdef Player < Hand
         end
 
         function calcHandValue(obj)
-            % Reset the hand value and 
-            % ace table to zero. Ensures there is no lingering
-            % data or stacking.  
+            % Resets values for recalc
             obj.hand_value = 0; 
             obj.nAces = 0;
             for c = obj.current_hand
