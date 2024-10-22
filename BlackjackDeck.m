@@ -2,7 +2,7 @@ classdef BlackjackDeck < Deck
     %% PROPERTIES
     properties(Access=private,Constant)
         % Taken from a blackjack source, usually the range dealers cut
-        cut_range = [60 75];
+        deckCutRange = [60 75];
     end
     %% CONSTRUCTOR
     methods
@@ -17,7 +17,7 @@ classdef BlackjackDeck < Deck
             obj.deck = obj.shuffleDeck();
 
             % Cutting the deck here
-            cutval = randi(BlackjackDeck.cut_range);
+            cutval = randi(BlackjackDeck.deckCutRange);
             bottomCards = obj.deck(end-cutval+1:end);
             obj.discardPile = [obj.discardPile, bottomCards];
             obj.deck(end-cutval+1:end) = [];
