@@ -21,19 +21,23 @@ classdef Game
                 GAME.players{i} = Player("Jack " + i, ...
                     200,GAME.deck.drawCard(2));
             end
-            
-            % Order of player is order of initialization, with 1 being the
-            % first player to go and length(players) being the last
-            
         end
     % REDO ALL                  
     end
     methods
-        function LaunchGame(GAME)
+        function g = LaunchGame(GAME)
             quitGame = false;
             % Loop through each play until exited
-            while(~quiteGame)
-                for currentPlayer = GAME.Players
+            while(~quitGame)
+                for id = 1:length(GAME.players)
+                    GAME.currentPlayerID = id;
+                    GAME.hit();
+                end
+                if ~GAME.checkGameBust
+                    quitGame = true;
+                end
+                if input("Quit Game?\n")==true || ~GAME.checkGameBust
+                    quitGame = true;
                 end
             end
             disp('Game has ended.')
@@ -50,31 +54,41 @@ classdef Game
         end
     end
     methods(Access = private)
-        function Hit(GAME)
+        function hit(GAME)
             GAME.lastAction = 'Hit';
-            GAME.currentPlayer.addCard(GAME.Draw(1));
-            if GAME.currentPlayer.handValue > 21
-                GAME.currentPlayer.isBust = true;
-            end
+            GAME.players{GAME.currentPlayerID}.addCard(GAME.draw(1))
+            GAME.checkIfBust;
         end
         function Raise(GAME)
         end
         function Fold(GAME)
         end
-        function CheckIfBust(GAME)
-            for i = 1:length(GAME.players)
-                player = GAME.players{i};
-                if player.isBust == true
-                    disp('Player ' + i + ' is now bust.');
-                end
-            end
-        end
+        
     end
     methods(Access = private)
-        function value = Draw(GAME,n)
+        function value = draw(GAME,n)
             value = GAME.deck.drawCard(n);
         end
 
+        % Currently inefficent, O(n) time as it has to check every player
+        % and see if they are bust
+        function value = checkGameBust(GAME)
+            for i = 1:length(GAME.players)
+                if ~GAME.players{1}.isBust
+                    value = true;
+                else
+                    value = false;
+                    break
+                end
+            end
+        end
+
+        function checkIfBust(GAME)
+            if GAME.players{GAME.currentPlayerID}.handValue > 21
+                GAME.players{GAME.currentPlayerID}.isBust = true;
+                disp(GAME.players{GAME.currentPlayerID}.playerName + ' is now bust.');
+            end
+        end
     end
 
 end
