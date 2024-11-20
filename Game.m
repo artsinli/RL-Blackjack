@@ -29,14 +29,15 @@ classdef Game
             quitGame = false;
             % Loop through each play until exited
             while(~quitGame)
-                for id = 1:length(GAME.players)
-                    GAME.currentPlayerID = id;
+                for loopPlayer = GAME.players
+                    GAME.currentPlayer = loopPlayer{1};
+                    % GAME.currentPlayerID = id;
                     GAME.hit();
                 end
-                if ~GAME.checkGameBust
+                if ~GAME.checkGameBust()
                     quitGame = true;
                 end
-                if input("Quit Game?\n")==true || ~GAME.checkGameBust
+                if input("Quit Game?\n")==true || ~GAME.checkGameBust()
                     quitGame = true;
                 end
             end
@@ -56,8 +57,9 @@ classdef Game
     methods(Access = private)
         function hit(GAME)
             GAME.lastAction = 'Hit';
-            GAME.players{GAME.currentPlayerID}.addCard(GAME.draw(1))
-            GAME.checkIfBust;
+            % GAME.players{GAME.currentPlayerID}.addCard(GAME.draw(1))
+            GAME.currentPlayer.addCard(GAME.draw(1))
+            GAME.checkIfBust();
         end
         function Raise(GAME)
         end
@@ -74,7 +76,7 @@ classdef Game
         % and see if they are bust
         function value = checkGameBust(GAME)
             for i = 1:length(GAME.players)
-                if ~GAME.players{1}.isBust
+                if ~GAME.players{i}.isBust
                     value = true;
                 else
                     value = false;
@@ -84,9 +86,9 @@ classdef Game
         end
 
         function checkIfBust(GAME)
-            if GAME.players{GAME.currentPlayerID}.handValue > 21
-                GAME.players{GAME.currentPlayerID}.isBust = true;
-                disp(GAME.players{GAME.currentPlayerID}.playerName + ' is now bust.');
+            if GAME.currentPlayer.handValue > 21
+                GAME.currentPlayer.isBust = true;
+                disp(GAME.currentPlayer.playerName + ' is now bust.');
             end
         end
     end
