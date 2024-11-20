@@ -1,9 +1,9 @@
 classdef(Abstract) Hand < handle
     %% PROPERTIES
     properties(Access = public)
-        current_hand
-        hand_value
-        AceTable
+        currentHand
+        handValue
+        aceTable
         nAces
         % SoftHand 
     end
@@ -23,7 +23,7 @@ classdef(Abstract) Hand < handle
                 error(['Must initiate a 2 card predraw to ' ...
                     'initialize a player']);
             end
-            obj.current_hand = predraw;    
+            obj.currentHand = predraw;    
             obj.nAces = 0;
             obj.calcHandValue;
         end
@@ -31,14 +31,14 @@ classdef(Abstract) Hand < handle
     %% PUBLIC METHODS
     methods
         function addCard(obj, card)
-            obj.current_hand = [obj.current_hand, card];
+            obj.currentHand = [obj.currentHand, card];
             obj.calcHandValue;
         end
 
         function result = getHandValue(obj)
             % Recalculate at each run
             obj.calcHandValue;
-            result = obj.hand_value;
+            result = obj.handValue;
         end
     end
     %% ABSTRACT METHODS
@@ -53,18 +53,18 @@ classdef(Abstract) Hand < handle
             % From the first index (0 aces flipped) to nAces (max aces
             % flipped)
             for i = 0:obj.nAces
-                result(i+1,:) = [i, min(obj.hand_value) + 10*i];
+                result(i+1,:) = [i, min(obj.handValue) + 10*i];
             end
-            obj.AceTable = result;
+            obj.aceTable = result;
         end
         
         % Calculates range of high/low hand values. 
         function calcHandValue(obj)
             % Resets values for recalc
-            obj.hand_value = 0;
+            obj.handValue = 0;
             obj.nAces = 0;
-            for c = obj.current_hand
-                obj.hand_value = obj.hand_value + c.BlackjackValue;
+            for c = obj.currentHand
+                obj.handValue = obj.handValue + c.BlackjackValue;
                 if strcmp(c.Value,'Ace')
                     obj.nAces = obj.nAces + 1;
                 end

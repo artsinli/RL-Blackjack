@@ -8,6 +8,7 @@ classdef Player < Hand
         MoneyPool
         canSplit
         bankrupt
+        isBust
     end
     %% CONSTRUCTORS
     methods
@@ -22,6 +23,7 @@ classdef Player < Hand
             obj.MoneyPool = playerBank;
             obj.playerName = playerName;
             obj.checkSplitHand;
+            obj.isBust = false;
         end
     end
     % methods
@@ -52,7 +54,7 @@ classdef Player < Hand
             end
         end
         function checkSplitHand(obj)
-            if isequal(obj.current_hand(1),obj.current_hand(2))
+            if isequal(obj.currentHand(1),obj.currentHand(2))
                 obj.canSplit = true;
             else
                 obj.canSplit = false;
