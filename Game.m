@@ -1,4 +1,4 @@
-classdef Game
+classdef Game < handle
     properties
         mainPot
         sidePot
@@ -7,6 +7,10 @@ classdef Game
         currentPlayerID
         currentPlayer
         lastAction
+        totalBustAmount
+    end
+    properties
+        numRounds
     end
     methods
         function GAME = Game()
@@ -21,12 +25,15 @@ classdef Game
                 GAME.players{i} = Player("Jack " + i, ...
                     200,GAME.deck.drawCard(2));
             end
+            
         end
     % REDO ALL                  
     end
     methods
         function g = LaunchGame(GAME)
             quitGame = false;
+            GAME.totalBustAmount = length(GAME.players);
+            GAME.numRounds = 0;
             % Loop through each play until exited
             while(~quitGame)
                 for loopPlayer = GAME.players
@@ -37,11 +44,13 @@ classdef Game
                 if ~GAME.checkGameBust()
                     quitGame = true;
                 end
-                if input("Quit Game?\n")==true || ~GAME.checkGameBust()
-                    quitGame = true;
-                end
+                % if input("Quit Game?\n")==true && quitGame == false
+                %     quitGame = true;
+                % end
+                GAME.numRounds = GAME.numRounds + 1;
             end
-            disp('Game has ended.')
+            fprintf('Game is over.\n')
+            fprintf(strcat(int2str(GAME.numRounds),' rounds played.'))
         end
         function debugGame(GAME)
             % Disp the current player
@@ -57,7 +66,6 @@ classdef Game
     methods(Access = private)
         function hit(GAME)
             GAME.lastAction = 'Hit';
-            % GAME.players{GAME.currentPlayerID}.addCard(GAME.draw(1))
             GAME.currentPlayer.addCard(GAME.draw(1))
             GAME.checkIfBust();
         end
@@ -75,20 +83,32 @@ classdef Game
         % Currently inefficent, O(n) time as it has to check every player
         % and see if they are bust
         function value = checkGameBust(GAME)
-            for i = 1:length(GAME.players)
-                if ~GAME.players{i}.isBust
-                    value = true;
-                else
-                    value = false;
-                    break
-                end
+            if GAME.totalBustAmount <= 0
+                value = false;
+            else
+                value = true;
             end
+            % for i = 1:length(GAME.players)
+            %     if ~GAME.players{i}.isBust
+            %         value = true;
+            %     else
+            %         value = false;
+            %         break
+            %     end
+            % end
         end
 
         function checkIfBust(GAME)
-            if GAME.currentPlayer.handValue > 21
+            % If the hand value with all combinations of aces is more than
+            % 21, the player is considered bust. Not a RL agent specific
+            % action so implemented on the game level. 
+            if all(GAME.currentPlayer.handValue > 21)  ...
+                    && ~GAME.currentPlayer.isBust
+
+                GAME.totalBustAmount = GAME.totalBustAmount - 1;
                 GAME.currentPlayer.isBust = true;
-                disp(GAME.currentPlayer.playerName + ' is now bust.');
+                disp(GAME.currentPlayer.playerName + ' is now bust. ' + ...
+                    GAME.totalBustAmount + ' players remaining.');
             end
         end
     end
