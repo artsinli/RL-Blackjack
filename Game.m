@@ -15,7 +15,7 @@ classdef Game < handle
     methods
         function GAME = Game()
             %GAME Construct an instance of this class
-            %   Detailed explanation goes here
+            %   Primary game class that is launched to play.
             GAME.deck = BlackjackDeck();
             GAME.mainPot = 0;
             GAME.sidePot = 0;
@@ -34,12 +34,19 @@ classdef Game < handle
             quitGame = false;
             GAME.totalBustAmount = length(GAME.players);
             GAME.numRounds = 0;
-            % Loop through each play until exited
+            % Loop through each play until exit
             while(~quitGame)
                 for loopPlayer = GAME.players
                     GAME.currentPlayer = loopPlayer{1};
-                    % GAME.currentPlayerID = id;
-                    GAME.hit();
+
+                    switch(input('What action do you wish to take\n 1- hit\n 2- raise \n 3- pass\n'))
+                        case 1
+                            GAME.hit()
+                        case 2
+                            fprintf("Raise\n")
+                        case 3
+                            fprintf("pass\n")
+                    end
                 end
                 if ~GAME.checkGameBust()
                     quitGame = true;
@@ -50,25 +57,28 @@ classdef Game < handle
                 GAME.numRounds = GAME.numRounds + 1;
             end
             fprintf('Game is over.\n')
-            fprintf(strcat(int2str(GAME.numRounds),' rounds played.'))
+            fprintf(strcat(int2str(GAME.numRounds),' rounds played.\n'))
         end
-        function debugGame(GAME)
-            % Disp the current player
-            disp('Current Player: ' + GAME.currentPlayer.playerName)
-            disp('Hand Value Array: ')
-            % Disp the hand value
-            disp(GAME.currentPlayer.handValue)
-            % Disp their action
-            disp('Last Action: ')
-            disp(GAME.lastAction)
-        end
+        % function debugGame(GAME)
+        %     % Disp the current player
+        %     disp('Current Player: ' + GAME.currentPlayer.playerName)
+        %     disp('Hand Value Array: ')
+        %     % Disp the hand value
+        %     disp(GAME.currentPlayer.handValue)
+        %     % Disp their action
+        %     disp('Last Action: ')
+        %     disp(GAME.lastAction)
+        % end
     end
     methods(Access = private)
         function hit(GAME)
             GAME.lastAction = 'Hit';
-            GAME.currentPlayer.addCard(GAME.draw(1))
+            GAME.currentPlayer.addCard(GAME.draw(1));
+            fprintf(strcat(GAME.currentPlayer, " drew a ", ...
+                GAME.currentPlayer.currentHand(end).))
             GAME.checkIfBust();
         end
+        
         function Raise(GAME)
         end
         function Fold(GAME)
@@ -80,35 +90,22 @@ classdef Game < handle
             value = GAME.deck.drawCard(n);
         end
 
-        % Currently inefficent, O(n) time as it has to check every player
-        % and see if they are bust
         function value = checkGameBust(GAME)
             if GAME.totalBustAmount <= 0
                 value = false;
             else
                 value = true;
             end
-            % for i = 1:length(GAME.players)
-            %     if ~GAME.players{i}.isBust
-            %         value = true;
-            %     else
-            %         value = false;
-            %         break
-            %     end
-            % end
         end
 
         function checkIfBust(GAME)
-            % If the hand value with all combinations of aces is more than
-            % 21, the player is considered bust. Not a RL agent specific
-            % action so implemented on the game level. 
             if all(GAME.currentPlayer.handValue > 21)  ...
                     && ~GAME.currentPlayer.isBust
 
                 GAME.totalBustAmount = GAME.totalBustAmount - 1;
                 GAME.currentPlayer.isBust = true;
                 disp(GAME.currentPlayer.playerName + ' is now bust. ' + ...
-                    GAME.totalBustAmount + ' players remaining.');
+                    GAME.totalBustAmount + ' players remaining.\n');
             end
         end
     end
