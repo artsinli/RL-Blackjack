@@ -6,9 +6,10 @@ from deck import Card, Deck
 
 class BlackjackDeck(Deck):
     """Deck tailored for blackjack play."""
-
+    # In blackjack, a deck is cut after it is mixed with several decks.
     deck_cut_range = (60, 75)
 
+    # Default amount of decks mixed in is 6, can be changed in the game.
     def __init__(self, num_decks: int = 6) -> None:
         super().__init__()
         # replicate deck num_decks times

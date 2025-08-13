@@ -36,3 +36,14 @@ class Player(Hand):
             self.can_split = True
         else:
             self.can_split = False
+
+    def show_status(self) -> None:
+        """Display the player's current status including hand, hand value(s), and money."""
+        print(f"\n--- {self.player_name}'s Turn ---")
+        print(f"Hand: {[f'{card.value} of {card.suit}' for card in self.current_hand]}")
+        hand_values = self.get_hand_value()
+        if len(hand_values) == 1:
+            print(f"Hand value: {hand_values[0]}")
+        else:
+            print(f"Hand values: {hand_values}")
+        print(f"Chips: {self.money_pool}")

@@ -38,7 +38,7 @@ class Hand:
                 low_total += value[0]
                 self.n_aces += 1
             else:
-                low_total += value
+                low_total += value if value is not None else 0
         if self.n_aces:
             self.hand_value = [low_total, low_total + 10 * self.n_aces]
             self.calc_ace_table()

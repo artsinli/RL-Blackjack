@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from random import shuffle
-from typing import List, Union
+from typing import List, Union, Final
 
 
 @dataclass
@@ -14,8 +14,9 @@ class Card:
 class Deck:
     """Generic deck of playing cards."""
 
-    suits = ["Hearts", "Diamonds", "Clubs", "Spades"]
-    values = [
+    SUITS: Final = ["Hearts", "Diamonds", "Clubs", "Spades"]
+    
+    VALUES: Final = [
         "2",
         "3",
         "4",
@@ -33,7 +34,7 @@ class Deck:
 
     def __init__(self) -> None:
         self.deck: List[Card] = [
-            Card(suit, value) for suit in self.suits for value in self.values
+            Card(suit, value) for suit in self.SUITS for value in self.VALUES
         ]
         self.discard_pile: List[Card] = []
         self.shuffle_deck()
@@ -50,7 +51,7 @@ class Deck:
         """Shuffle the deck in place and return it."""
         shuffle(self.deck)
         return self.deck
-
+    
     def discard_card(self, card_index: int) -> None:
         """Discard a card from the deck to the discard pile."""
         if card_index >= len(self.deck):
