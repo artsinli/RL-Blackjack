@@ -39,11 +39,32 @@ class Player(Hand):
 
     def show_status(self) -> None:
         """Display the player's current status including hand, hand value(s), and money."""
-        print(f"\n--- {self.player_name}'s Turn ---")
-        print(f"Hand: {[f'{card.value} of {card.suit}' for card in self.current_hand]}")
+        print(f"\n{'─'*40}")
+        print(f"   🎮 {self.player_name}'s Status")
+        print(f"{'─'*40}")
+        
+        # Show hand with card emojis
+        hand_display = [f"{card.value} of {card.suit}" for card in self.current_hand]
+        print(f"🎴 Hand: {' | '.join(hand_display)}")
+        
+        # Show hand values with better formatting
         hand_values = self.get_hand_value()
         if len(hand_values) == 1:
-            print(f"Hand value: {hand_values[0]}")
+            print(f"🎯 Hand value: {hand_values[0]}")
         else:
-            print(f"Hand values: {hand_values}")
-        print(f"Chips: {self.money_pool}")
+            print(f"🎯 Hand values: {min(hand_values)}/{max(hand_values)}")
+        
+        # Show available money
+        print(f"💰 Available funds: ${self.money_pool}")
+        
+        # Show status indicators
+        if self.is_bust:
+            print("💥 Status: BUST")
+        elif self.bankrupt:
+            print("💸 Status: BANKRUPT")
+        elif 21 in hand_values:
+            print("🃏 Status: BLACKJACK!")
+        else:
+            print("✅ Status: Active")
+        
+        print(f"{'─'*40}")
